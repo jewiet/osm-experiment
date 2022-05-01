@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>OSM Project</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+        <style>
+         .map
+         { height: 100vh;
+             width: 100%;
+         }
+         label {
+             display: block;
+             font: 1rem 'Fira Sans', sans-serif;
+         }
+
+         input,
+         label {
+             margin: .4rem 0;
+         }
+        </style>
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    </head>
+    <body>
+        <h2>
+            OSM
+        </h2>
+        <form id="search-form">
+            <label for="site-search">Search a place:</label>
+            <input type="search" id="search-input" name="q" value="Generaal de la Rejilaan 47A, 1404BP Bussum" autofocus>
+            <button id="search">Search</button>
+        </form>
+        <ul id=searchResult>
+        </ul>
+        <div id="map" class="map">
+        </div>
+        <script type="text/javascript">
+         const form = document.getElementById("search-form")
+         form.addEventListener("submit", (event) => {
+             event.preventDefault ()
+             const place = document.getElementById("search-input").value
+             console.log("value of const place", place)
+             const search = new URLSearchParams({q: place, format: "json"});
+             const url = new URL (`https://nominatim.openstreetmap.org/search`)
+             url.search = search
+             console.log(url.href)
+
+             fetch(url).then(response => {
+                 return response.json();
+             }).then(data =>{
+                 console.log(data);
+                 // data.forEach((item)=>{
+                 //     let li = document.createElement("searchResult");
+                 //     li.innerText = item;
+                 //     list.appendChild(li);
+                 // })
+             })
+
+         })
+
+         var map = new ol.Map({
+             target: 'map',
+             layers: [
+                 new ol.layer.Tile({
+                     source: new ol.source.OSM()
+                 })
+             ],
+             view: new ol.View({
+                 center: ol.proj.fromLonLat([37.41, 8.82]),
+                 zoom: 4
+             })
+         });
+        </script>
+
+    </body>
+</html>
